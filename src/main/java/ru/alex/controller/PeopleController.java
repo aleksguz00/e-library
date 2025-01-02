@@ -8,16 +8,19 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.alex.dao.PersonDao;
 import ru.alex.model.Person;
+import ru.alex.util.PersonValidator;
 
 @Controller
 @RequestMapping("/people")
 public class PeopleController {
 
     private final PersonDao personDao;
+    private final PersonValidator personValidator;
 
     @Autowired
-    public PeopleController(PersonDao personDao) {
+    public PeopleController(PersonDao personDao, PersonValidator personValidator) {
         this.personDao = personDao;
+        this.personValidator = personValidator;
     }
 
     @GetMapping
@@ -44,7 +47,7 @@ public class PeopleController {
 
     @PostMapping
     public String create(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult) {
-        // Make validate if it needs
+        personValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "/people/new";
@@ -64,9 +67,10 @@ public class PeopleController {
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("person") @Valid Person person,
                          BindingResult bindingResult, @PathVariable int id) {
-        // Make an email check
 
-        if (bindingResult.hasErrors()) {
+        personValidator.validate(person, bindingResult);
+
+        if (bindingResult.hasErrors() && !personDao.checkEditEmail(person)) {
             return "/people/edit";
         }
 

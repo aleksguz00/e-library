@@ -7,6 +7,7 @@ import ru.alex.model.Book;
 import ru.alex.model.Person;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PersonDao {
@@ -27,6 +28,18 @@ public class PersonDao {
         String sql = "select * from person where id = ?";
 
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Person.class), id);
+    }
+
+    public Optional<Person> findByEmail(String email) {
+        String sql = "select * from person where email = ?";
+
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Person.class), email).stream().findAny();
+    }
+
+    public boolean checkEditEmail(Person person) {
+        Person savedPerson = findById(person.getId());
+
+        return savedPerson.getEmail().equals(person.getEmail());
     }
 
     public void save(Person person) {
