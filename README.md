@@ -12,15 +12,17 @@ CRUD электронная библиотека на Spring MVC, JDBC API и с
    ```bash
     cd
 
-3. Собрать проект:
+3. В папке resources создать файл database.properties для конфига БД и заполнить его по образцу файла database.properties.origin
+
+4. Собрать проект:
    ```bash
    mvn clean package
 
-4. Поднять docker-контейнер с БД
+5. Поднять docker-контейнер с БД
    ```bash
    docker-compose up -d
 
-5. Запустить проект
+6. Запустить проект
 - Либо из IDE
 - Либо через команды запуска Tomcat:
 
